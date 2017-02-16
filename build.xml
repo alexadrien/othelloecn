@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Omegathello" default="all" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" xmlns:sonar="antlib:org.sonar.ant">
+	<description>Omegathello : implementing an IA for Othello with ANN.</description>
+		
+	<target name="checkDependencies"
+			description="Check if dependencies are satisfied">
+		<property name="src.location" location="src"/>
+		<mkdir dir="build"/>
+		<mkdir dir="build/release"/>
+		<mkdir dir="build/release/.class"/>
+		<mkdir dir="build/debug"/>
+		<mkdir dir="build/debug/.class"/>
+		<property name="bin.location" location="build/release"/>
+		<echo message="Source directory is ${src.location}"/>
+		<condition property="src.available">
+			<and>
+				<available file="${src.location}" type="dir"/>
+				<available file="${bin.location}" type="dir"/>
+			</and>
+		</condition>
+	</target>
+	
+	<target name="build" description="Build the application"
+			depends="checkDependencies" if="src.available">
+		<echo message="Building application..."/>
+		<javac srcdir="${src.location}" destdir="${bin.location}/.class"/>
+		<javac srcdir="${src.location}" destdir="build/debug/.class" debug="on"/>
+		<manifest file="build/MANIFEST.MF">
+		  <attribute name="Main-Class"
+					 value="othellopgroup.TestClass" />
+		</manifest>
+		<jar destfile="${bin.location}/Omegathello.jar" basedir="${bin.location}/.class" manifest="build/MANIFEST.MF">
+			<fileset dir="${bin.location}/.class" />
+		</jar>
+		<echo message="Done!"/>
+	</target>
+	
+	<!-- 
+	Téléchargement de JUnit si pas installé 
+	Le fichier junit.jar est placé dans le dossier ${ant.home}/lib
+	-->
+	<available classname="org.junit.runner.Runner" property="junit.installed"/>
+	<target name="install-junit" description="Install junit" unless="junit.installed">
+		<get dest="${ant.home}/lib/junit.jar" src="http://central.maven.org/maven2/junit/junit/4.4/junit-4.4.jar"/>
+	</target>
+	
+	<!--
+	Compilation des tests
+	-->
+	<target name="compileUnitTests" depends="build">
+		<property name="test.src.location" location="test"/>
+		<mkdir dir="build/debug/.test"/>
+		<javac srcdir="${test.src.location}" destdir="build/debug/.test" debug="on">
+			<classpath>
+				<pathelement path="build/debug/.class"/>
+			</classpath>
+		</javac>
+	</target>
+	
+
+	
+	<!--
+	Execution des tests
+	-->
+	<target name="runUnitTests" description="Effectue les tests"
+		    depends="install-junit, compileUnitTests">
+		<mkdir dir="build/debug/.test/report"/>
+		<junit printsummary="withOutAndErr" haltonfailure="no">
+			<formatter type="plain"/>
+			<classpath>
+				<pathelement path="build/debug/.class"/>
+				<pathelement path="build/debug/.test"/>
+				<pathelement location="${ant.home}/lib/hamcrest-core-1.3.jar"/>
+			</classpath>
+			<batchtest fork="yes" todir="build/debug/.test/report">
+				<fileset dir="build/debug/.test"/>
+			</batchtest>
+		</junit>
+	</target>
+	
+	
+	<!--
+	Compilation de la JavaDoc
+	-->
+	<target name="buildJavadoc" description="Compile la javadoc">
+		<mkdir dir="build/release/javadoc"/>
+		<javadoc sourcepath="src" destdir="build/release/javadoc" encoding="utf8" docencoding="utf8" charset="utf8" />
+	</target>
+	
+	<!--
+	Support de Jacoco
+	-->
+	<target name="runJacoco">
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+			<classpath path="lib/jacocoant.jar"/>
+		</taskdef>
+		<jacoco:coverage>
+			<!--java classname="othellopgroup.TestOthello" fork="true">
+				<classpath>
+					<pathelement location="build/debug/.class"/>
+				</classpath>
+			</java-->
+			<junit fork="true" forkmode="once" haltonfailure="no">
+				<classpath>
+					<pathelement path="build/debug/.class"/>
+					<pathelement path="build/debug/.test"/>
+					<pathelement location="${ant.home}/lib/hamcrest-core-1.3.jar"/>
+				</classpath>
+				<batchtest fork="yes" todir="build/debug/.test/report">
+					<fileset dir="build/debug/.test"/>
+				</batchtest>
+			</junit>
+		</jacoco:coverage>
+		<mkdir dir="build/report"/>		
+		<jacoco:report>                   
+			<executiondata>
+				<file file="jacoco.exec"/>
+			</executiondata>                
+			<structure name="Example Project">
+				<classfiles>
+					<fileset dir="build/debug/.class"/>
+				</classfiles>
+				<sourcefiles encoding="UTF-8">
+					<fileset dir="src"/>
+				</sourcefiles>
+			</structure>     
+			<html destdir="build/report"/>
+		</jacoco:report>
+	</target>
+	
+
+	
+	
+	<!--
+	Support de SonarQube
+	-->
+	<property name="sonar.host.url" value="http://localhost:9000" />
+	
+	<property name="sonar.projectKey" value="org.sonarqube:omegathello" />
+	<property name="sonar.projectName" value="Omegathello" />
+	<property name="sonar.projectVersion" value="1.0" />
+	<property name="sonar.projectBaseDir" value="." />
+	<property name="sonar.sources" value="src" />
+	<property name="sonar.java.binaries" value="build/debug/.class" />
+	<property name="sonar.java.libraries" value="lib/*.jar" />
+	<property name="sonar.jacoco.reportPath" value="jacoco.exec" />
+
+	
+	<available file="${ant.home}/lib/sonarqube-ant-task-2.5.jar" property="sonar.installed"/>
+	<target name="installSonar" description="Installs SonarScaner Ant plugin" unless="sonar.installed">
+		<get dest="${ant.home}/lib/sonarqube-ant-task-2.5.jar" src="https://sonarsource.bintray.com/Distribution/sonarqube-ant-task/sonarqube-ant-task-2.5.jar" />
+	</target>
+	
+	<target name="runSonar" depends="installSonar">
+		<taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+			<classpath path="${ant.home}/lib/sonarqube-ant-task-*.jar" />
+		</taskdef>
+	 	<sonar:sonar /> <!-- Execute l'analyse --> 
+	</target>
+	
+	
+	<target name="all">
+		<antcall target="build"/>
+		<antcall target="buildJavadoc"/>
+		<antcall target="runUnitTests"/>
+		<antcall target="runJacoco"/>
+		<antcall target="runSonar"/>
+	</target>
+
+</project>
