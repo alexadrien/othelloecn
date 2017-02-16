@@ -21,6 +21,7 @@ import java.util.logging.Logger;
  * @author hector
  */
 public class Othello {
+
     private int[][] board;
     State state;
     List<Move> moves;
@@ -44,9 +45,9 @@ public class Othello {
             moves.add(new Move(movesin.get(k)));
         }
     }
-    
+
     public Othello(Othello game) {
-        this(game.board,game.state,game.moves);
+        this(game.board, game.state, game.moves);
     }
 
     public int[][] getboard() {
@@ -95,30 +96,7 @@ public class Othello {
 
     }
 
-    public void display() {
-        Othello game2 = new Othello(this);
-        int[][] board2 = game2.board;
-        for (int j = 0; j < 8; j++) {
-            for (int k = 0; k < 8; k++) {
-                if (board2[k][j] == -1) {
-                    board2[k][j] = 2;
-                }
-            }
-
-            System.out.println(board2[0][j] + " "
-                    + board2[1][j] + " "
-                    + board2[2][j] + " "
-                    + board2[3][j] + " "
-                    + board2[4][j] + " "
-                    + board2[5][j] + " "
-                    + board2[6][j] + " "
-                    + board2[7][j] + " ");
-        }
-        System.out.println(state);
-        for (int i = 0; i < moves.size(); i++) {
-            moves.get(i).display();
-        }
-    }
+    public void display() {} //fonction déplacée en class Interface
 
     public void acknowledgePass(Player p) {
         System.out.println(p + "doit passer");
@@ -300,83 +278,23 @@ public class Othello {
             return possibleMoves(Player.BlackPlayer);
         }
     }
-    
-    public void displayPossibleMoves(){
-        List<Move> Moves=possibleMoves(Player.BlackPlayer);
-        for (int k=0;k<Moves.size();k++){
-            Moves.get(k).display();
-        }
+
+    public void displayPossibleMoves() {} // Methode déplacée dans la class interface
+
+    public void save(String filename) {//MEthode déplacé dans Interface
     }
 
-    public void save(String filename) {
-        BufferedWriter bufferedWriter = null;
-        try {
-            // Creation du BufferedWriter
-            bufferedWriter = new BufferedWriter(new FileWriter(filename));
-            // On ecrit dans le fichier
-            bufferedWriter.write(state + "");
-            for (int i = 0; i < moves.size(); i++) {
-                Move m = moves.get(i);
-                bufferedWriter.newLine();
-                bufferedWriter.write((int) m.pos.getX() + " " + (int) m.pos.getY() + " " + m.player);
-            }
-
-        } // on attrape l'exception si on a pas pu creer le fichier
-        catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } // on attrape l'exception si il y a un probleme lors de l'ecriture dans le fichier
-        catch (IOException ex) {
-            ex.printStackTrace();
-        } // on ferme le fichier
-        finally {
-            try {
-                if (bufferedWriter != null) {
-                    // je force l'Ã©criture dans le fichier
-                    bufferedWriter.flush();
-                    // puis je le ferme
-                    bufferedWriter.close();
-                }
-            } // on attrape l'exception potentielle 
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+    public void load(String source) {//Methode deplacée dans Interface
     }
 
-    public void load(String source) {
-        InitPos();
-        try {
-            String ligne;
-            BufferedReader fichier = new BufferedReader(new FileReader(source));
-            ligne = fichier.readLine();
-            String finalstate = ligne;
-            ligne = fichier.readLine();
-
-            while (ligne != null) {
-                String[] reader = ligne.split(" ");
-                int x = Integer.parseInt(reader[0]);
-                int y = Integer.parseInt(reader[1]);
-                Player p = Player.valueOf(reader[2]);
-                Move m = new Move(x, y, p);
-                makeMove(m);
-                ligne = fichier.readLine();
-            }
-            state = State.valueOf(finalstate);
-
-            fichier.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void rewind() throws NoMoveException{
+    public void rewind() throws NoMoveException {
         int[][] dir = {{0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}, {-1, -1}, {-1, 0}, {-1, 1}};
-        if (moves.isEmpty()){
-        throw new NoMoveException();
+        if (moves.isEmpty()) {
+            throw new NoMoveException();
         }
         Move m = moves.get(moves.size() - 1);
         moves.remove(moves.size() - 1);
-        
+
         int toReverse;
         int indexX;
         int indexY;
@@ -395,22 +313,21 @@ public class Othello {
         board[indexX][indexY] = 0;
         reverseState();
     }
-    
-    public void rewind(int n) throws NoMoveException{
-        for (int i=0;i<n;i++){
-           rewind();
+
+    public void rewind(int n) throws NoMoveException {
+        for (int i = 0; i < n; i++) {
+            rewind();
         }
     }
-    
-    public Move popLastMove(){
-        Move m=moves.get(moves.size());
+
+    public Move popLastMove() {
+        Move m = moves.get(moves.size());
         try {
             rewind();
         } catch (NoMoveException ex) {
             Logger.getLogger(Othello.class.getName()).log(Level.SEVERE, null, ex);
         }
         return m;
-        
-        
+
     }
 }
