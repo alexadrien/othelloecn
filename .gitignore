@@ -2,4 +2,4 @@
 /build/
 /dist/
 manifest.mf
-build.xml
+nbbuild.xml

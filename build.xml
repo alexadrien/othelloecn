@@ -90,7 +90,7 @@
 	<!--
 	Support de Jacoco
 	-->
-	<target name="runJacoco">
+	<target name="runJacoco" depends="compileUnitTests">
 		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
 			<classpath path="lib/jacocoant.jar"/>
 		</taskdef>
