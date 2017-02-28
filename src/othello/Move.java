@@ -56,5 +56,11 @@ public class Move {
         return m.getPlayer() == player && m.getPos().equals(pos);
     }
     
+    @Override
+    public String toString()
+    {
+        return "("+pos.getX()+","+pos.getY()+","+player+")";
+    }
+    
     
 }

@@ -98,7 +98,7 @@ public class Othello {
     public String posString(Point2D pt) {
         assert inBoard(pt.getX(), pt.getY());
         String[] chars = {"a", "b", "c", "d", "e", "f", "g", "h"};
-        return chars[pt.getX()] + pt.getY();
+        return chars[pt.getX()] + (pt.getY()+1);
     }
     
     public Point2D stringToPos(String pos) {
@@ -111,7 +111,7 @@ public class Othello {
             }
         }
         int y = Integer.valueOf(pos.substring(1, 2));
-        return new Point2D(x, y);
+        return new Point2D(x, y-1);
     }
 
 
