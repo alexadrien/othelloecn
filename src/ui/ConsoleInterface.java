@@ -156,19 +156,25 @@ public class ConsoleInterface {
             else if(in.startsWith("-s "))
             {
                 String savename = in.substring("-s ".length());
-                game.save(savename);
-                /// TODO check if save was successful
-                System.out.println("[Info] Game successfully saved");
+                boolean ok = game.save(savename);
+                if(ok) {
+                    System.out.println("[Info] Game successfully saved");
+                } else {
+                    System.out.println("[Info] Error while saving game");
+                }
                 return InterfaceAskUserInput;
             }
             else if(in.startsWith("-l "))
             {
                 String savename = in.substring("-l ".length());
                 Othello newGame = new Othello();
-                /// TODO check if load was successful
-                newGame.load(savename);
-                game = newGame;
-                System.out.println("[Info] Game succesfully loaded");
+                boolean ok = newGame.load(savename);
+                if(ok) {
+                    game = newGame;
+                    System.out.println("[Info] Game successfully loaded");
+                } else {
+                    System.out.println("[Info] Error while loading game");
+                }
                 return InterfaceContinue;
             }
             else if(in.equals("-p")) 
@@ -243,6 +249,14 @@ public class ConsoleInterface {
     {
         System.out.println("White token count : " + game.getTokenCount(TokenColor.WhiteToken));
         System.out.println("Black token count : " + game.getTokenCount(TokenColor.BlackToken));
+        Player winner = game.getWinner();
+        if(winner == Player.BlackPlayer) {
+            System.out.println("Black player wins !");
+        } else if(winner == Player.WhitePlayer) {
+            System.out.println("White player wins !");
+        } else {
+            System.out.println("Draw !");
+        }
     }
     
     private void printHelp()

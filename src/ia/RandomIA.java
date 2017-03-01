@@ -9,7 +9,7 @@ import othello.Othello;
 public class RandomIA extends AbstractIA {
     
     
-    public RandomIA(String[] args)
+    public RandomIA(String args)
     {
         super(args);
     }

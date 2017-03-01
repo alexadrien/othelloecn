@@ -6,13 +6,13 @@ import othello.Othello;
 import othello.Move;
 
 public abstract class AbstractIA {
-    private String[] args;
+    private String args;
     
-    public AbstractIA(String[] args_) {
+    public AbstractIA(String args_) {
         args = args_;
     }
     
-    public String[] getArgs()
+    public String getArgs()
     {
         return args;
     }

@@ -27,7 +27,7 @@
 		<javac srcdir="${src.location}" destdir="build/debug/.class" debug="on"/>
 		<manifest file="build/MANIFEST.MF">
 		  <attribute name="Main-Class"
-					 value="othellopgroup.TestClass" />
+					 value="Main" />
 		</manifest>
 		<jar destfile="${bin.location}/Omegathello.jar" basedir="${bin.location}/.class" manifest="build/MANIFEST.MF">
 			<fileset dir="${bin.location}/.class" />

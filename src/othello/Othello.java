@@ -73,7 +73,22 @@ public class Othello {
     }
     
     
-
+    /**
+     * Sets the state, board and list of played move to the given arguments.
+     * 
+     * This function should only be used for testing purpose.
+     * 
+     * Calling popLastMove() or rewind() after using this function may produce 
+     * invalid results if the list of moves m is not consistent with the current 
+     * game state.
+     * Additionnaly, saving the game with save() and loading it with load() 
+     * will work only if the list of moves is consitent with the game state.
+     * It is recommended to pass m as null and not to use any of the 
+     * aforementioned functions.
+     * @param b
+     * @param s
+     * @param m list of moves, can be null
+     */
     public void setGame(int[][] b, State s, List<Move> m) {
         board = b;
         state = s;
@@ -366,7 +381,7 @@ public class Othello {
         }
     }
 
-    public void save(String filename) {
+    public boolean save(String filename) {
         String save = "";
         
         save += state.toString() + ":";
@@ -382,53 +397,69 @@ public class Othello {
         FileWriter writer = null;
         try {
             writer = new FileWriter(filename);
-            writer.write(save);
-            writer.close();
-        } // on attrape l'exception si on a pas pu creer le fichier
-        catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } // on attrape l'exception si il y a un probleme lors de l'ecriture dans le fichier
+        } 
         catch (IOException ex) {
             ex.printStackTrace();
-        } // on ferme le fichier
-        finally {
-            try {
-                if (writer != null) {
-                    writer.close();
-                }
-            } // on attrape l'exception potentielle 
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            writer = null;
+        } 
+        
+        if(writer == null) {
+            return false;
         }
+        
+        boolean success = true;
+        
+        try {
+            writer.write(save);
+        } catch(IOException ex) {
+            ex.printStackTrace();
+            success = false;
+        }
+        
+        try {
+            writer.close();
+        } catch(IOException ex) {
+            ex.printStackTrace();
+            success = false;
+        }
+        
+        return success;
     }
 
-    public void load(String filename) {
+    public boolean load(String filename) {
         FileReader reader = null;
         String save = "";
         try {
             reader = new FileReader(filename);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            reader = null;
+        }
+        
+        if(reader == null) {
+            return false;
+        }
+        
+        boolean success = true;
+        
+        try {
             char[] buf = new char[1024];
             int read = reader.read(buf, 0, 1024);
             save = new String(buf, 0, read);
-            reader.close();
-        } catch (Exception e) {
+        } catch(IOException e) {
             e.printStackTrace();
+            success = false;
         }
-        finally {
-            try {
-                if (reader != null) {
-                    reader.close();
-                }
-            } // on attrape l'exception potentielle 
-            catch (IOException ex) {
-                ex.printStackTrace();
-            }
+       
+        try {
+            reader.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+            success = false;
         }
         
-        
-        if(save.equals("")) {
-            return;
+        if(save.equals("") || !success) {
+            return false;
         }
         
         String state_str = save.substring(0, save.indexOf(":"));
@@ -449,6 +480,8 @@ public class Othello {
         }
         
         state = sstate;
+        
+        return true;
     }
 
     public void rewind() {
