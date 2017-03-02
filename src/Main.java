@@ -8,12 +8,13 @@ public class Main {
     public static List<String> availableAIs() {
         List<String> ret = new ArrayList<String>();
         ret.add("random");
+        ret.add("minmax");
         return ret;
     }
 
     public static void main(String[] args) {
         String mode = "HvM";
-        String[] ai = {"random", "random"};
+        String[] ai = {"minmax", "random"};
         String[] ai_opts = {"", ""};
 
         int ai_index = 0; // number of times the -ai argument was found

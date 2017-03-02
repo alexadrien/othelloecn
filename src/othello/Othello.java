@@ -55,6 +55,7 @@ public class Othello {
 
     public Othello(Othello game) {
         this(game.board, game.state, game.moves);
+        nbrTokens = game.nbrTokens;
     }
 
     public int[][] getBoard() {
@@ -514,6 +515,7 @@ public class Othello {
         
         board[x][y] = TokenColor2Int(NoToken);
         nbrTokens -= 1;
+        possibleMovesCache = null;
         
         state = (m.getPlayer() == WhitePlayer ? WhitePlayerTurn : BlackPlayerTurn);
         
@@ -548,5 +550,32 @@ public class Othello {
     
     private boolean isEmpty(int x, int y) {
         return board[x][y] == 0;
+    }
+    
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null) {
+            return false;
+        }
+
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        Othello other = (Othello) obj;
+        if(other.state != this.state) {
+            return false;
+        }
+        
+        for(int i = 0; i < 8; ++i) {
+            for(int j = 0; j < 8; ++j) {
+                if(board[i][j] != other.board[i][j]) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
     }
 }

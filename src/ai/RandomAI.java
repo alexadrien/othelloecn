@@ -33,6 +33,12 @@ public class RandomAI extends AbstractAI {
     }
     
     @Override
+    public void notifyLoad(Othello game)
+    {
+        // nothing to do
+    }
+    
+    @Override
     public Move selectMoveWithTimeout(Othello game, List<Move> moves, int timeout) {
         if(moves.size() == 1) {
             return moves.get(0);

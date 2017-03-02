@@ -2,6 +2,7 @@ package ui;
 
 import othello.*;
 import ai.AbstractAI;
+import ai.MinMaxAI;
 import ai.RandomAI;
 import java.util.List;
 import java.util.Scanner;
@@ -35,10 +36,14 @@ public class ConsoleInterface {
         
         if(ai1_.equals("random")) {
             ai1 = new RandomAI(null);
+        } else if(ai1_.equals("minmax")) {
+            ai1 = new MinMaxAI(null);
         }
         
         if(ai2_.equals("random")) {
             ai2 = new RandomAI(null);
+        } else if(ai2_.equals("minmax")) {
+            ai2 = new MinMaxAI(null);
         }
     }
     
@@ -70,6 +75,8 @@ public class ConsoleInterface {
                 {
                     Move m = ai1.selectMove(game, game.possibleMoves(Player.WhitePlayer));
                     game.makeMove(m);
+                    ai1.notifyMove(m);
+                    ai2.notifyMove(m);
                     continue;
                 }
             }
@@ -97,12 +104,15 @@ public class ConsoleInterface {
                 {
                     Move m = ai1.selectMove(game, game.possibleMoves(Player.BlackPlayer));
                     game.makeMove(m);
+                    ai1.notifyMove(m);
                     continue;
                 }
                 else if(mode == MvM)
                 {
                     Move m = ai2.selectMove(game, game.possibleMoves(Player.BlackPlayer));
                     game.makeMove(m);
+                    ai1.notifyMove(m);
+                    ai2.notifyMove(m);
                     continue;
                 }
             }
@@ -173,6 +183,12 @@ public class ConsoleInterface {
                 if(ok) {
                     game = newGame;
                     System.out.println("[Info] Game successfully loaded");
+                    if (mode == HvM) {
+                        ai1.notifyLoad(game);
+                    } else if (mode == MvM) {
+                        ai1.notifyLoad(game);
+                        ai2.notifyLoad(game);
+                    }
                 } else {
                     System.out.println("[Info] Error while loading game");
                 }
@@ -257,9 +273,15 @@ public class ConsoleInterface {
             
             if(game.getState() == State.WhitePlayerTurn) {
                 game.makeMove(m);
+                if(mode == HvM) {
+                    ai1.notifyMove(m);
+                }
                 return InterfaceContinue;
             } else if(game.getState() == State.BlackPlayerTurn) {
                 game.makeMove(m);
+                if(mode == HvM) {
+                    ai1.notifyMove(m);
+                }
                 return InterfaceContinue;
             } else {
                 System.out.println("[Error] Current player cannot make a move");
@@ -274,6 +296,7 @@ public class ConsoleInterface {
     
     private void printGameResult()
     {
+        game.display();
         System.out.println("White token count : " + game.getTokenCount(TokenColor.WhiteToken));
         System.out.println("Black token count : " + game.getTokenCount(TokenColor.BlackToken));
         Player winner = game.getWinner();
