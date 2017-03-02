@@ -1,14 +1,14 @@
-package ia;
+package ai;
 
 import java.util.List;
 
 import othello.Othello;
 import othello.Move;
 
-public abstract class AbstractIA {
+public abstract class AbstractAI {
     private String args;
     
-    public AbstractIA(String args_) {
+    public AbstractAI(String args_) {
         args = args_;
     }
     
@@ -31,6 +31,14 @@ public abstract class AbstractIA {
      * @param n number of moves canceled by the call to rewind().
      */
     public abstract void notifyRewind(int n);
+    
+    /**
+     * This function is called by the interface to notify the IA that the 
+     * Othello.makeMove() function was called with the given move as 
+     * argument.
+     * @param m 
+     */
+    public abstract void notifyMove(Move m);
     
     public abstract Move selectMoveWithTimeout(Othello game, List<Move> moves, int timeout);
     

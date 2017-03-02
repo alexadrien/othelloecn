@@ -5,7 +5,7 @@ import ui.ConsoleInterface;
 
 public class Main {
 
-    public static List<String> availableIAs() {
+    public static List<String> availableAIs() {
         List<String> ret = new ArrayList<String>();
         ret.add("random");
         return ret;
@@ -13,11 +13,11 @@ public class Main {
 
     public static void main(String[] args) {
         String mode = "HvM";
-        String[] ia = {"random", "random"};
-        String[] ia_opts = {"", ""};
+        String[] ai = {"random", "random"};
+        String[] ai_opts = {"", ""};
 
-        int ia_index = 0; // number of times the -ia argument was found
-        int ia_opts_index = 0;
+        int ai_index = 0; // number of times the -ai argument was found
+        int ai_opts_index = 0;
         for (int i = 0; i < args.length; ++i) {
             String arg = args[i];
             if (arg.equals("-h") || arg.equals("--help")) 
@@ -41,9 +41,9 @@ public class Main {
                 }
 
             }
-            else if (arg.equals("-ia")) 
+            else if (arg.equals("-ai")) 
             {
-                if (ia_index == 2) {
+                if (ai_index == 2) {
                     System.out.println("[Error] " + arg + " argument : cannot be provided more than twice");
                     return;
                 }
@@ -55,16 +55,16 @@ public class Main {
 
                 i += 1;
 
-                ia[ia_index] = args[i];
-                if (!availableIAs().contains(ia[ia_index])) {
-                    System.out.println("[Warning] " + arg + " argument : invalid ia '" + ia[ia_index] + "' using default ia random");
-                    ia[ia_index] = "random";
+                ai[ai_index] = args[i];
+                if (!availableAIs().contains(ai[ai_index])) {
+                    System.out.println("[Warning] " + arg + " argument : invalid ia '" + ai[ai_index] + "' using default ia random");
+                    ai[ai_index] = "random";
                 }
 
-                ia_index += 1;
+                ai_index += 1;
             }
-            else if (arg.equals("--ia-opts")) {
-                if (ia_opts_index == 2) {
+            else if (arg.equals("--ai-opts")) {
+                if (ai_opts_index == 2) {
                     System.out.println("[Error] " + arg + " argument : cannot be provided more than twice");
                     return;
                 }
@@ -76,9 +76,9 @@ public class Main {
 
                 i += 1;
 
-                ia_opts[ia_opts_index] = args[i];
+                ai_opts[ai_opts_index] = args[i];
                 
-                ia_opts_index += 1;
+                ai_opts_index += 1;
             }
             else
             {
@@ -86,7 +86,7 @@ public class Main {
             }
         }
 
-        ConsoleInterface ui = new ConsoleInterface(mode, ia[0], ia_opts[0], ia[1], ia_opts[1]);
+        ConsoleInterface ui = new ConsoleInterface(mode, ai[0], ai_opts[0], ai[1], ai_opts[1]);
 
         ui.exec();
     }
@@ -105,11 +105,11 @@ public class Main {
         System.out.println("\t\t  - HvH : human versus human");
         System.out.println("\t\t  - MvM : machine versus machine");
         
-        System.out.println("-ia <value>");
-        System.out.println("\t\tSets the game IA, can be used twice if mode is MvM, possible values for <value> are : ");
-        System.out.println("\t\t  - random : ia plays randomly (default)");
+        System.out.println("-ai <value>");
+        System.out.println("\t\tSets the game AI, can be used twice if mode is MvM, possible values for <value> are : ");
+        System.out.println("\t\t  - random : ai plays randomly (default)");
         
-        System.out.println("--ia-opts <value>");
-        System.out.println("\t\tSets the game IA options, can be used twice if mode is MvM, possible values for <value> depends on selected IA.");
+        System.out.println("--ai-opts <value>");
+        System.out.println("\t\tSets the game AI options, can be used twice if mode is MvM, possible values for <value> depends on selected IA.");
     }
 }

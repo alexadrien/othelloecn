@@ -1,9 +1,8 @@
 package ui;
 
 import othello.*;
-import ia.AbstractIA;
-
-import ia.RandomIA;
+import ai.AbstractAI;
+import ai.RandomAI;
 import java.util.List;
 import java.util.Scanner;
 import utils.Point2D;
@@ -12,8 +11,8 @@ public class ConsoleInterface {
     
     private Othello game;
     private int mode;
-    private AbstractIA ia1;
-    private AbstractIA ia2;
+    private AbstractAI ai1;
+    private AbstractAI ai2;
     
     private static final int HvM = 0;
     private static final int HvH = 1;
@@ -23,7 +22,7 @@ public class ConsoleInterface {
     private static final int InterfaceContinue = 1;
     private static final int InterfaceAskUserInput = 2;
     
-    public ConsoleInterface(String mode_, String ia1_, String ia1_opts_, String ia2_, String ia2_opts_)
+    public ConsoleInterface(String mode_, String ai1_, String ai1_opts_, String ai2_, String ai2_opts_)
     {
         game = new Othello();
         
@@ -34,12 +33,12 @@ public class ConsoleInterface {
             mode = HvH;
         }
         
-        if(ia1_.equals("random")) {
-            ia1 = new RandomIA(null);
+        if(ai1_.equals("random")) {
+            ai1 = new RandomAI(null);
         }
         
-        if(ia2_.equals("random")) {
-            ia2 = new RandomIA(null);
+        if(ai2_.equals("random")) {
+            ai2 = new RandomAI(null);
         }
     }
     
@@ -69,7 +68,7 @@ public class ConsoleInterface {
                 }
                 else
                 {
-                    Move m = ia1.selectMove(game, game.possibleMoves(Player.WhitePlayer));
+                    Move m = ai1.selectMove(game, game.possibleMoves(Player.WhitePlayer));
                     game.makeMove(m);
                     continue;
                 }
@@ -80,7 +79,7 @@ public class ConsoleInterface {
                     numPlayer = 1;
                     System.out.println("White player must pass (-p command)");
                 } else {
-                    ia1.notifyPass();
+                    ai1.notifyPass();
                     game.acknowledgePass(Player.WhitePlayer);
                     continue;
                 }
@@ -96,13 +95,13 @@ public class ConsoleInterface {
                 }
                 else if(mode == HvM)
                 {
-                    Move m = ia1.selectMove(game, game.possibleMoves(Player.BlackPlayer));
+                    Move m = ai1.selectMove(game, game.possibleMoves(Player.BlackPlayer));
                     game.makeMove(m);
                     continue;
                 }
                 else if(mode == MvM)
                 {
-                    Move m = ia2.selectMove(game, game.possibleMoves(Player.BlackPlayer));
+                    Move m = ai2.selectMove(game, game.possibleMoves(Player.BlackPlayer));
                     game.makeMove(m);
                     continue;
                 }
@@ -116,13 +115,13 @@ public class ConsoleInterface {
                 }
                 else if(mode == HvM)
                 {
-                    ia1.notifyPass();
+                    ai1.notifyPass();
                     game.acknowledgePass(Player.BlackPlayer);
                     continue;
                 }
                 else if(mode == MvM)
                 {
-                    ia2.notifyPass();
+                    ai2.notifyPass();
                     game.acknowledgePass(Player.BlackPlayer);
                     continue;
                 }

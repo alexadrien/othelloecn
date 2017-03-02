@@ -1,4 +1,4 @@
-package ia;
+package ai;
 
 import java.util.List;
 import java.util.Random;
@@ -6,10 +6,10 @@ import othello.Move;
 import othello.Othello;
 
 
-public class RandomIA extends AbstractIA {
+public class RandomAI extends AbstractAI {
     
     
-    public RandomIA(String args)
+    public RandomAI(String args)
     {
         super(args);
     }
@@ -22,6 +22,12 @@ public class RandomIA extends AbstractIA {
     
     @Override
     public void notifyRewind(int n)
+    {
+        // nothing to do
+    }
+    
+    @Override
+    public void notifyMove(Move m)
     {
         // nothing to do
     }
