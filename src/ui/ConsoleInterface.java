@@ -145,6 +145,8 @@ public class ConsoleInterface {
     
     private int handleUserInput(String in)
     {
+        in = in.trim();
+        
         if(in.startsWith("-")) 
         {
             if(in.equals("-h"))
@@ -207,6 +209,32 @@ public class ConsoleInterface {
                 game.display();
                 return InterfaceAskUserInput;
             }
+            else if(in.startsWith("-r"))
+            {
+                int n = 1;
+                String arg = in.substring("-r".length()).trim();
+                if(!arg.isEmpty()) {
+                    try {
+                        n = Integer.parseInt(arg);
+                    } catch (NumberFormatException e) {
+                        System.out.print("[Info] Invalid input '" + arg + "' for -r command.");
+                        return InterfaceAskUserInput;
+                    }
+                }
+                if(game.getMoves().size() < n) {
+                    System.out.print("[Info] Not enough move played.");
+                    return InterfaceAskUserInput;
+                }
+                game.rewind(n);
+                if(mode == HvM) {
+                    ai1.notifyRewind(n);
+                } else if(mode == MvM) {
+                    ai1.notifyRewind(n);
+                    ai2.notifyRewind(n);
+                }
+                
+                return InterfaceContinue;
+            }
         }
         else
         {
@@ -267,6 +295,7 @@ public class ConsoleInterface {
         System.out.println("[Info] -exit : exits the game");
         System.out.println("[Info] -s <savename> : saves the game");
         System.out.println("[Info] -l <savename> : loads a previously saved game");
+        System.out.println("[Info] -r [<num>] : cancels one or num (if provided) move(s)");
     }
     
 }
