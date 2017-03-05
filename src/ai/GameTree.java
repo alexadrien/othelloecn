@@ -10,22 +10,22 @@ import othello.*;
  */
 public class GameTree {
     private GameTreeNode root;
-    private Player player;
     
-    public GameTree(Othello game, Player player)
+    public GameTree(Othello game)
     {
         this.root = new GameTreeNode(this, game);
-        this.player = player;
     }
     
     public GameTreeNode getRoot()
     {
         return root;
     }
-    
-    public Player getPlayer()
-    {
-        return player;
+
+    public int height() {
+        return root.height();
     }
     
+    public int nodeCount() {
+        return root.nodeCount();
+    }
 }

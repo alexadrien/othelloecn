@@ -23,6 +23,13 @@ public class ConsoleInterface {
     private static final int InterfaceContinue = 1;
     private static final int InterfaceAskUserInput = 2;
     
+    private class ConsolePrinter implements AbstractAI.OStream {
+        @Override
+        public void write(String str) {
+            System.out.println(str);
+        }
+    }
+    
     public ConsoleInterface(String mode_, String ai1_, String ai1_opts_, String ai2_, String ai2_opts_)
     {
         game = new Othello();
@@ -34,17 +41,11 @@ public class ConsoleInterface {
             mode = HvH;
         }
         
-        if(ai1_.equals("random")) {
-            ai1 = new RandomAI(null);
-        } else if(ai1_.equals("minmax")) {
-            ai1 = new MinMaxAI(null);
-        }
+        ai1 = omegathello.Main.instantiateAI(ai1_, ai1_opts_);        
+        ai2 = omegathello.Main.instantiateAI(ai2_, ai2_opts_);
         
-        if(ai2_.equals("random")) {
-            ai2 = new RandomAI(null);
-        } else if(ai2_.equals("minmax")) {
-            ai2 = new MinMaxAI(null);
-        }
+        ai1.setOStream(new ConsolePrinter());
+        ai2.setOStream(new ConsolePrinter());
     }
     
     public void exec()

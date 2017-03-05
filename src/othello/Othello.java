@@ -280,6 +280,8 @@ public class Othello {
         }
         moves.add(m);
         
+        possibleMovesCache = null;
+        
         if(nbrTokens == 64) {
             state = GameOver;
             return;

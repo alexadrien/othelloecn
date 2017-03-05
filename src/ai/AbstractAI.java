@@ -7,16 +7,22 @@ import othello.Move;
 
 public abstract class AbstractAI {
     private String args;
+    private OStream ostream;
+    
+    public interface OStream {
+        public void write(String str);
+    }
     
     public AbstractAI(String args_) {
         args = args_;
+        ostream = null;
     }
     
     public String getArgs()
     {
         return args;
     }
-    
+        
     /**
      * This function is called by the interface to notify the AI that the 
      * it is about to call Othello.acknownledgePass() on behalf of the AI.
@@ -52,5 +58,19 @@ public abstract class AbstractAI {
     public Move selectMove(Othello game, List<Move> moves)
     {
         return selectMoveWithTimeout(game, moves, -1);
+    }
+    
+    public OStream getOStream() {
+        return ostream;
+    }
+    
+    public void setOStream(OStream os) {
+        ostream = os;
+    }
+    
+    protected void print(String str) {
+        if(ostream != null) {
+            ostream.write(str);
+        }
     }
 }

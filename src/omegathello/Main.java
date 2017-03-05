@@ -1,20 +1,70 @@
+package omegathello;
+
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import ai.AbstractAI;
+import ai.MinMaxAI;
+import ai.MonteCarloAI;
+import ai.RandomAI;
+import java.lang.reflect.Field;
 import ui.ConsoleInterface;
 
 public class Main {
 
-    public static List<String> availableAIs() {
-        List<String> ret = new ArrayList<String>();
-        ret.add("random");
-        ret.add("minmax");
-        return ret;
+    public static List<Class> availableAIs() {
+        List<Class> ais = new ArrayList<Class>();
+        ais.add(RandomAI.class);
+        ais.add(MinMaxAI.class);
+        ais.add(MonteCarloAI.class);
+        return ais;
+    }
+    
+    public static Class getAI(String name) {
+        List<Class> ais = availableAIs();
+        for(int i = 0; i < ais.size(); ++i) {
+            Class c = ais.get(i);
+            try {
+                Field name_field = c.getField("NAME");
+                String ai_name = (String) name_field.get(null);
+                if(ai_name.equals(name)) {
+                    return c;
+                }
+            } 
+            catch(NoSuchFieldException e) { } 
+            catch(IllegalAccessException e) { } 
+        }
+        
+        return null;
+    }
+    
+    public static AbstractAI instantiateAI(String name, String args) {
+        Class ai = getAI(name);
+        if(ai == null) {
+            return null;
+        }
+        
+        try {
+            Constructor ctor = ai.getConstructor("".getClass());
+            AbstractAI ret = (AbstractAI) ctor.newInstance(args);
+            return ret;
+        } 
+        catch(NoSuchMethodException e) { } 
+        catch(InstantiationException e) { }
+        catch(IllegalAccessException e) { }
+        catch(IllegalArgumentException e) { }
+        catch(InvocationTargetException e) { }
+        
+        return null;
     }
 
     public static void main(String[] args) {
         String mode = "HvM";
-        String[] ai = {"minmax", "random"};
+        String[] ai = {"montecarlo", "minmax"};
         String[] ai_opts = {"", ""};
 
         int ai_index = 0; // number of times the -ai argument was found
@@ -57,7 +107,7 @@ public class Main {
                 i += 1;
 
                 ai[ai_index] = args[i];
-                if (!availableAIs().contains(ai[ai_index])) {
+                if (getAI(ai[ai_index]) == null) {
                     System.out.println("[Warning] " + arg + " argument : invalid ia '" + ai[ai_index] + "' using default ia random");
                     ai[ai_index] = "random";
                 }

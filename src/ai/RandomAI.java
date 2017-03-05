@@ -7,12 +7,14 @@ import othello.Othello;
 
 
 public class RandomAI extends AbstractAI {
-    
+    public static final String NAME = "random";
     
     public RandomAI(String args)
     {
         super(args);
     }
+    
+
     
     @Override
     public void notifyPass()

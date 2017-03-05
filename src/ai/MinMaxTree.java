@@ -8,6 +8,7 @@ import othello.Move;
 import othello.Othello;
 import othello.Player;
 import othello.State;
+import utils.Timeout;
 
 /**
  *
@@ -17,8 +18,8 @@ public class MinMaxTree extends GameTree {
  
     protected GameTreeNode current;
     protected EvaluationFunction evaluator;
-    private int timeout;
-    private long start_time;
+    private Timeout timer;
+    protected Player player;
     
     public class AlgorithmTimeout extends RuntimeException {
         public List<Move> partial_result;
@@ -27,25 +28,12 @@ public class MinMaxTree extends GameTree {
         }
     }
     
-    public MinMaxTree(Othello game, Player p, EvaluationFunction f)
+    public MinMaxTree(Othello game, EvaluationFunction f)
     {
-        super(game, p);
+        super(game);
         current = getRoot();
         evaluator = f;
-    }
-    
-    
-    private boolean timeoutExpired()
-    {
-        if(timeout < 0) {
-            return false;
-        }
-        
-        if(System.currentTimeMillis() - start_time > timeout) {
-            return true;
-        }
-        
-        return false;
+        timer = new Timeout();
     }
     
     private void debug(String str) {
@@ -54,8 +42,7 @@ public class MinMaxTree extends GameTree {
     
     public List<Move> minmax(GameTreeNode node, int depth, int timeout)
     {
-        start_time = System.currentTimeMillis();
-        this.timeout = timeout;
+        this.timer.start(timeout);
         
         // we need to make a copy of the game because when rec_minmax throws 
         // the played move are not cancelled.
@@ -64,18 +51,18 @@ public class MinMaxTree extends GameTree {
         for(int i = 0; i < depth; ++i) {
             moves.add(null);
         }
-        int dummy = rec_minmax(game, node, depth, moves, null, null);
+        int unused = rec_minmax(game, node, depth, moves, null, null);
         return moves;
     }
     
     public int rec_minmax(Othello game, GameTreeNode node, int depth, List<Move> result, Integer alpha, Integer beta)
     {
-        if(timeoutExpired()) {
+        if(this.timer.expired()) {
             throw new AlgorithmTimeout(result);
         }
         
         if(game.getState() == State.GameOver || depth == 0) {
-            return evaluator.evaluate(game, this.getPlayer());
+            return evaluator.evaluate(game, this.player);
         }
         
         
@@ -109,12 +96,14 @@ public class MinMaxTree extends GameTree {
                         val = new_val;
                     }
                     
+                    beta = (beta == null ? val : Math.min(beta, val));
                 } else {
                     if(new_val > val) {
                         selected = i;
                         val = new_val;
                     }
 
+                    alpha = (alpha == null ? val : Math.max(alpha, val));
                 }
             }
             
@@ -133,8 +122,7 @@ public class MinMaxTree extends GameTree {
                     // -> we can return early with a value that will be ignored
                     return val;
                 }
-            } else if (beta != null) {
-                assert is_min == false;
+            } else if (is_min == false && beta != null) {
                 if (beta <= val) {
                     // we know that this node will have a value greater 
                     // than val, but val is alreay too big to be 
@@ -156,7 +144,7 @@ public class MinMaxTree extends GameTree {
     
     protected boolean isMin(Othello game)
     {
-        if(this.getPlayer() == Player.BlackPlayer)
+        if(this.player == Player.BlackPlayer)
         {
             if((game.getState() == State.WhitePlayerPass || game.getState() == State.WhitePlayerTurn)) {
                return true; 
@@ -164,7 +152,7 @@ public class MinMaxTree extends GameTree {
             return false;
         }
         
-        return (this.getPlayer() == Player.WhitePlayer && 
+        return (this.player == Player.WhitePlayer && 
                 (game.getState() == State.BlackPlayerPass || game.getState() == State.BlackPlayerTurn));
     }
     

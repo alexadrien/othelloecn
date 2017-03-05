@@ -5,6 +5,7 @@ import java.util.Random;
 import othello.Move;
 import othello.Othello;
 import othello.Player;
+import othello.State;
 import othello.TokenColor;
 
 /**
@@ -13,6 +14,7 @@ import othello.TokenColor;
  * @author Vincent
  */
 public class MinMaxAI extends AbstractAI {
+    public static final String NAME = "minmax";
     
     private int depth;
     private MinMaxTree tree;
@@ -20,10 +22,7 @@ public class MinMaxAI extends AbstractAI {
     private class SymmetricEvalFunc implements EvaluationFunction
     {
         @Override
-        public int evaluate
-        (Othello game, Player p
-        
-            ) {
+        public int evaluate(Othello game, Player p) {
                 TokenColor mycolor = (p == Player.WhitePlayer ? TokenColor.WhiteToken : TokenColor.BlackToken);
             Player adv = (p == Player.WhitePlayer ? Player.BlackPlayer : Player.WhitePlayer);
             TokenColor adv_color = (p == Player.WhitePlayer ? TokenColor.BlackToken : TokenColor.WhiteToken);
@@ -45,14 +44,37 @@ public class MinMaxAI extends AbstractAI {
     }
 
     
-    public MinMaxAI(String args)
+    public MinMaxAI(String arg_string)
     {
-        super(args);
+        super(arg_string);
         
         depth = 3;
-        tree = new MinMaxTree(new Othello(), Player.BlackPlayer, new SymmetricEvalFunc());
+        EvaluationFunction eval_func  = new SymmetricEvalFunc(); 
+        
+        if(arg_string != null) {
+            String[] args = arg_string.split(",");
+            for(String a : args) {
+                if(a.startsWith("depth=")) {
+                    try {
+                        depth = Integer.parseInt(a.substring("depth=".length()));
+                    } catch(Exception e) {
+                        System.err.println("[minmax] Invalid format for 'depth' argument.");
+                    }
+                } else if(a.startsWith("func=")) {
+                    a = a.substring("func=".length());
+                    if(a.equals("ssymef")) {
+                        eval_func  = new SymmetricEvalFunc(); 
+                    } else {
+                        System.err.println("[minmax] Invalid argument '" + a + "' for 'func' option.");
+                    }
+                } else {
+                    System.err.println("[minmax] Unknown option '" + a + "'.");
+                }
+            }
+        }
+        
+        tree = new MinMaxTree(new Othello(), eval_func);
     }
-    
 
     public int getDepth()
     {
@@ -67,6 +89,7 @@ public class MinMaxAI extends AbstractAI {
         
         depth = d;
     }
+   
     
     @Override
     public void notifyPass()
@@ -92,7 +115,7 @@ public class MinMaxAI extends AbstractAI {
     @Override
     public void notifyLoad(Othello game)
     {
-        tree = new MinMaxTree(new Othello(game), Player.BlackPlayer, new SymmetricEvalFunc());
+        tree = new MinMaxTree(new Othello(game), new SymmetricEvalFunc());
     }
     
     
@@ -100,6 +123,12 @@ public class MinMaxAI extends AbstractAI {
     public Move selectMoveWithTimeout(Othello game, List<Move> moves, int timeout) {
         if(moves.size() == 1) {
             return moves.get(0);
+        }
+        
+        if(game.getState() == State.WhitePlayerTurn) {
+            tree.player = Player.WhitePlayer;
+        } else {
+            tree.player = Player.BlackPlayer;
         }
         
         Random r = new Random();
