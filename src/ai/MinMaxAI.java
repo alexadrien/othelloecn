@@ -18,7 +18,7 @@ public class MinMaxAI extends AbstractAI {
     
     private int depth;
     private MinMaxTree tree;
-    
+
     private class SymmetricEvalFunc implements EvaluationFunction
     {
         @Override
@@ -75,6 +75,13 @@ public class MinMaxAI extends AbstractAI {
         
         tree = new MinMaxTree(new Othello(), eval_func);
     }
+    
+    public MinMaxAI(EvaluationFunction f, Player p) {
+        super(null);
+        depth = 3;
+        tree = new MinMaxTree(new Othello(), f);
+        tree.player = p;
+    }
 
     public int getDepth()
     {
@@ -115,7 +122,7 @@ public class MinMaxAI extends AbstractAI {
     @Override
     public void notifyLoad(Othello game)
     {
-        tree = new MinMaxTree(new Othello(game), new SymmetricEvalFunc());
+        tree = new MinMaxTree(new Othello(game), tree.evaluator);
     }
     
     

@@ -41,19 +41,19 @@ Plusieurs options sont disponibles pour modifier le comportement du jeu.
 - ```m```
   * Syntaxe : ```-m <mode>```
   * Description : le mode de jeu
-  * Valeur possible pour <mode> :
+  * Valeur possible pour ```<mode>``` :
      * ```HvM``` (default) : l'homme affronte la machine
 	 * ```HvH``` : l'homme affronte l'homme
 	 * ```MvM``` : la machine affronte la machine
 - ```ai```
   * Syntaxe : ```-ai <nom-ia>```
   * Description : l'IA a utiliser
-  * Valeur possible pour <nom-ia> : voir la section IA implémentées
+  * Valeur possible pour ```<nom-ia>``` : voir la section IA implémentées
   * Note : cette option peut être utilisée deux fois dans le cas d'un mode MvM pour spécifier les deux IA a utiliser
 - ```-ai-opts```
   * Syntaxe : ```--ai-opts <options>```
   * Description : les options de construction pour l'IA
-  * Valeur possible pour <options> : dépend de chaque IA
+  * Valeur possible pour ```<options>``` : dépend de chaque IA
   * Note : cette option peut être utilisée deux fois dans le cas d'un mode MvM pour spécifier les deux IA a utiliser
 
   
