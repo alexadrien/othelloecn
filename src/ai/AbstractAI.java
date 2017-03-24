@@ -4,6 +4,10 @@ import java.util.List;
 
 import othello.Othello;
 import othello.Move;
+import othello.Player;
+import static othello.Player.BlackPlayer;
+import static othello.Player.WhitePlayer;
+import othello.State;
 
 public abstract class AbstractAI {
     private String args;
@@ -73,4 +77,49 @@ public abstract class AbstractAI {
             ostream.write(str);
         }
     }
+    
+    public static int[] comp(AbstractAI p1, AbstractAI p2, int n) {
+        int[] result = new int[]{0, 0, 0};
+        for(int i = 0; i < n; ++i) {
+            p1.notifyLoad(new Othello());
+            p2.notifyLoad(new Othello());
+            Player winner = comp(p1, p2);
+            if(winner == BlackPlayer) {
+                result[2] += 1;
+            } else if(winner == WhitePlayer) {
+                result[0] += 1;
+            } else {
+                result[1] += 1;
+            }
+        }
+        return result;
+    }
+    
+    public static Player comp(AbstractAI white, AbstractAI black) {
+        Othello game = new Othello();
+
+        while (game.getState() != State.GameOver) {
+            if (game.getState() == State.WhitePlayerPass) {
+                game.acknowledgePass(WhitePlayer);
+                white.notifyPass();
+            } else if (game.getState() == State.BlackPlayerPass) {
+                game.acknowledgePass(BlackPlayer);
+                black.notifyPass();
+            } else if (game.getState() == State.BlackPlayerTurn) {
+                Move m = black.selectMove(game, game.possibleMoves());
+                game.makeMove(m);
+                white.notifyMove(m);
+                black.notifyMove(m);
+            } else {
+                Move m = white.selectMove(game, game.possibleMoves());
+                game.makeMove(m);
+                white.notifyMove(m);
+                black.notifyMove(m);
+            }
+        }
+
+        return game.getWinner();
+    }
+    
 }
+

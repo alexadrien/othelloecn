@@ -157,6 +157,9 @@ public class ConsoleInterface {
     private int handleUserInput(String in)
     {
         in = in.trim();
+        if(in.isEmpty()) {
+            return InterfaceAskUserInput;
+        }
         
         if(in.startsWith("-")) 
         {

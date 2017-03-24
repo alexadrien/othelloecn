@@ -8,10 +8,13 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import ai.AbstractAI;
+import ai.AnnAI;
 import ai.MinMaxAI;
 import ai.MonteCarloAI;
 import ai.RandomAI;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import ui.AnnInterface;
 import ui.ConsoleInterface;
 
 public class Main {
@@ -21,6 +24,7 @@ public class Main {
         ais.add(RandomAI.class);
         ais.add(MinMaxAI.class);
         ais.add(MonteCarloAI.class);
+        ais.add(AnnAI.class);
         return ais;
     }
     
@@ -62,10 +66,16 @@ public class Main {
         return null;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         String mode = "HvM";
         String[] ai = {"montecarlo", "minmax"};
         String[] ai_opts = {"", ""};
+        
+        if(args.length > 0 && args[0].equals("ann")) {
+            AnnInterface ann_ui = new AnnInterface(args);
+            ann_ui.exec();
+            return;
+        } 
 
         int ai_index = 0; // number of times the -ai argument was found
         int ai_opts_index = 0;

@@ -51,7 +51,7 @@ public class MinMaxAI extends AbstractAI {
         depth = 3;
         EvaluationFunction eval_func  = new SymmetricEvalFunc(); 
         
-        if(arg_string != null) {
+        if(arg_string != null && !arg_string.isEmpty()) {
             String[] args = arg_string.split(",");
             for(String a : args) {
                 if(a.startsWith("depth=")) {

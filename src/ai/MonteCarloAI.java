@@ -122,11 +122,13 @@ public class MonteCarloAI extends AbstractAI {
     @Override
     public Move selectMoveWithTimeout(Othello game, List<Move> moves, int timeout)
     {
-        this.timer.start(timeout);
-        
-        if(explorationCount == -1) {
+        if (timeout > 0) {
             this.timer.start(Math.min(timeout, this.defaultTimeout));
+        } else {
+            this.timer.start(this.defaultTimeout);
         }
+        
+
         
         if(this.player == Player.NullPlayer) {
             if(game.getState() == State.WhitePlayerTurn) {
@@ -188,8 +190,11 @@ public class MonteCarloAI extends AbstractAI {
     public int selectBranchToPlay(GameTreeNode node)
     {
         int selected = 0;
-        double win_rate = node.childs[0].winning_branches / (double) node.childs[0].explored_branches;
-        for(int i = 1; i < node.childs.length; ++i) {
+        double win_rate = 0.0;
+        for(int i = 0; i < node.childs.length; ++i) {
+            if(node.childs[i] == null) {
+                continue;
+            }
             double mywinrate = node.childs[i].winning_branches / (double) node.childs[i].explored_branches;
             if(mywinrate > win_rate) {
                 selected = i;
