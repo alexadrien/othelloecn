@@ -33,7 +33,7 @@ public class MonteCarloAI extends AbstractAI {
         explorationCount = 100;
         defaultTimeout = 750;
         
-        if(arg_string != null) {
+        if(arg_string != null && !arg_string.isEmpty()) {
             String[] args = arg_string.split(",");
             for(String a : args) {
                 if(a.startsWith("num=")) {

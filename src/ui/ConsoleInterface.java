@@ -258,6 +258,10 @@ public class ConsoleInterface {
         }
         else
         {
+            if(in.length() != 2 || in.charAt(1) < '0' || in.charAt(1) > '8') {
+                System.out.println("[Error] Invalid input position");
+                return InterfaceAskUserInput;
+            }
             Point2D pos = game.stringToPos(in);
             List<Move> pmoves = game.possibleMoves();
             Move m = null;

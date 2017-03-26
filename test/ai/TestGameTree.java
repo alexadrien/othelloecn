@@ -112,7 +112,7 @@ public class TestGameTree extends TestCase {
         GameTree tree = new GameTree(new Othello());
         GameTreeNode root = tree.getRoot();
         
-        int mcount = 6;
+        int mcount = 9;
         List<GameTreeNode> rnodes = root.reachableGames(mcount);
         System.out.println(rnodes.size() + " possible game-states in " + mcount + " moves.");
         int tt_nodecount = tree.nodeCount();

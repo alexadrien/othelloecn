@@ -22,6 +22,9 @@ public class GameTreeNode {
     protected int parent_index;
     protected List<Move> moves;
     protected GameTreeNode[] childs;
+    /*
+    The following attributes are used by MonteCarlo only
+    */
     protected int winning_branches;
     protected int explored_branches;
     protected int total_branches;

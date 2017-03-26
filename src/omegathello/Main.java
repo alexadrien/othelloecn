@@ -168,7 +168,10 @@ public class Main {
         
         System.out.println("-ai <value>");
         System.out.println("\t\tSets the game AI, can be used twice if mode is MvM, possible values for <value> are : ");
-        System.out.println("\t\t  - random : ai plays randomly (default)");
+        System.out.println("\t\t  - random : ai plays randomly");
+        System.out.println("\t\t  - minmax : ai plays with minmax algorithm");
+        System.out.println("\t\t  - montecarlo : ai plays using MonteCarlo tree search (default)");
+        System.out.println("\t\t  - ann : ai plays with a neural network");
         
         System.out.println("--ai-opts <value>");
         System.out.println("\t\tSets the game AI options, can be used twice if mode is MvM, possible values for <value> depends on selected IA.");
