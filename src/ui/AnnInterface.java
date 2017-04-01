@@ -191,7 +191,8 @@ public class AnnInterface {
             }
         }
         
-        writer.write("" + total + " 64 1\n");
+        writer.write("" + total + " 64 1");
+        writer.write(System.lineSeparator());
         
         for(int arg_index = 2; arg_index < args.length - 1; ++arg_index) {
             String arg = args[arg_index];
@@ -218,7 +219,8 @@ public class AnnInterface {
                 for(int s = 0; s < num; ++s) {
                     GameTreeNode node = getRandomNode(tree, depth == -1 ? rgen.nextInt(60-4) : depth);
                     writeBoard(writer, node.getGame(true));
-                    writer.write("" + eval.evaluate(node.getGame(), BlackPlayer) + "\n");
+                    writer.write("" + eval.evaluate(node.getGame(), BlackPlayer));
+                    writer.write(System.lineSeparator());
                 }
             }
         }
@@ -429,18 +431,20 @@ public class AnnInterface {
     }
     
     public static void writeBoard(BufferedWriter w, Othello game) throws IOException {
+        String str = "";
         for(int y = 0; y < 8; ++y) {
             for(int x = 0; x < 8; ++x) {
                 if(game.getToken(x, y) == TokenColor.BlackToken) {
-                    w.write(""+1+" ");
+                    str += ""+1+" ";
                 } else if(game.getToken(x, y) == TokenColor.WhiteToken) {
-                    w.write(""+(-1)+" ");
+                    str += ""+(-1)+" ";
                 } else {
-                    w.write("0 ");
+                    str += "0 ";
                 }
             }
         }
-        w.write("\n");
+        w.write(str.substring(0, str.length()-1));
+        w.write(System.lineSeparator());
     }
     
     

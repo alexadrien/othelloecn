@@ -2,6 +2,25 @@
 Github option info 2017 projet de groupe Othello
 
 
+## Support Multi-plateformes
+
+### Windows
+
+Il suffit de compiler le projet avec ANT (voir paragraphe suivant) ou Netbeans et de placer la bibliothèque ```fannfloat.dll``` dans le même dossier que ```Omegathello.jar```.
+Alternativement, il est possible d'utiliser directement les binaires situés dans le dossier ```bin```.
+
+(Testé sous Windows 10)
+
+### Linux
+
+Il faudra pour pouvoir utiliser les réseaux de neurones compiler et installer la bibliothèque Fann en suivant les instructions décrites sur la page GitHub du projet : https://github.com/libfann/fann/ .
+
+**Note** : le réseau de neurones ```ann_128``` fourni par défaut ayant été créé sous Windows avec une version plus ancienne de la bibliothèque (FANN 2.1), il ne fonctionnera pas sous Linux avec la dernière version de FANN (v2.2). Seul les réseaux créés avec l'interface ```ann``` pourront être utilisés.
+
+(Partiellement testé sous machine virtuelle Ubuntu 16.04.1)
+
+
+
 ## Compilation avec ANT
 
 Le projet peut facilement être compilé avec ANT en exécutant la commande ```ant``` à la racine du projet.
